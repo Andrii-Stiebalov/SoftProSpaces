@@ -1,61 +1,57 @@
-<script lang="ts">
-import { defineComponent, computed, ref, watch } from "vue";
-import PropertyListItem from "../components/PropertyListItem.vue";
-import { useRentStore } from "@/store/store";
-import type { Property } from '../types/index.type';
-
-export default defineComponent({
-  name: "PropertyList",
-  components: { PropertyListItem },
-  setup() {
-    const search = ref("");
-    const currentPage = ref(1);
-    const perPage = ref(8);
-    const store = useRentStore();
-    //@ts-ignore
-    const properties = computed<Property[]>(() => store.properties);
-
-    const filteredProperties = computed<Property[]>(() => {
-      const query = search.value.toLowerCase().trim();
-      if (!query) return properties.value;
-      return properties.value.filter(
-        (p) =>
-          p.title.toLowerCase().includes(query) ||
-          p.location.toLowerCase().includes(query)
-      );
-    });
-
-    const totalPages = computed<number>(() =>
-      Math.ceil(filteredProperties.value.length / perPage.value)
-    );
-
-    const paginatedProperties = computed<Property[]>(() => {
-      const start = (currentPage.value - 1) * perPage.value;
-      return filteredProperties.value.slice(start, start + perPage.value);
-    });
-
-    watch(search, () => (currentPage.value = 1));
-
-    const onSelectProperty = (id: number) => {
-      // @ts-ignore
-      router.push(`/property/${id}`);
-    };
-
-    const filter = () => {
-      currentPage.value = 1;
-    };
-
-    return {
-      search,
-      currentPage,
-      perPage,
-      properties,
-      filteredProperties,
-      totalPages,
-      paginatedProperties,
-      onSelectProperty,
-      filter,
-    };
-  },
-});
-</script>
+<template>
+  <div class="w-full max-w-md pb-4 flex gap-2"> <input type="text" id="search" v-model="search"
+      placeholder="Введіть назву або локацію..."
+      class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 bg-white transition-colors duration-200 sm:text-sm" />
+    <button class="bg-sky-500 shadow-cyan-500/50 p-2 px-6 rounded-xl font-bold" @click="filter">
+      <div class="fas fa-search"></div>
+    </button>
+  </div>
+  <section class="w-full">
+    <div class="min-h-lvh" v-if="this.filteredProperties.length">
+      <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <PropertyListItem v-for="property in paginatedProperties" :key="property.id" :property="property"
+          @click="() => onSelectProperty(property.id)" />
+      </div>
+    </div>
+    <div v-else class="min-h-lvh"></div>
+    <div class="flex justify-center gap-2 mt-6" v-if="totalPages"> <button
+        class="px-3 py-1 rounded bg-sky-500 hover:bg-gray-300" :disabled="currentPage === 1" @click="currentPage--"> <i
+          class="fa-solid fa-arrow-left"></i> </button> <span class="px-3 py-1 font-bold"> {{ currentPage }} / {{
+            totalPages }} </span> <button class="px-3 py-1 rounded bg-sky-500 hover:bg-gray-300"
+        :disabled="currentPage === totalPages" @click="currentPage++"> <i class="fa-solid fa-arrow-right"></i> </button>
+    </div>
+  </section>
+</template>
+<script>
+import PropertyListItem from "../components/PropertyListItem.vue"; 
+import { useRentStore } from "@/store/store"; 
+export default { 
+  data() { 
+    return { 
+      search: "", 
+      currentPage: 1, 
+      perPage: 8, 
+      }; 
+    }, 
+    components: { 
+      PropertyListItem, 
+      },
+      computed: { 
+        properties() { 
+          return useRentStore().properties; 
+        },
+          
+        filteredProperties() { 
+          const query = this.search.toLowerCase().trim(); 
+          if (!query) return this.properties; 
+          return this.properties.filter((p) => p.title.toLowerCase().includes(query) || p.location.toLowerCase().includes(query)); }, 
+          otalPages() { return Math.ceil(this.filteredProperties.length / this.perPage); }, 
+          paginatedProperties() { const start = (this.currentPage - 1) * this.perPage; 
+          return this.filteredProperties.slice(start, start + this.perPage); }, }, 
+          watch: { search() { this.currentPage = 1; }, }, 
+          methods: { onSelectProperty(id) { this.$router.push(`/property/${ id }`); }, 
+          filter() { this.currentPage = 1; 
+          },
+           }, 
+          }; 
+            </script>
