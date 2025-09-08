@@ -1,4 +1,9 @@
 <template>
+      <div class="mb-4">
+      <button @click="onBack" class="text-md font-semibold pb-1">
+        <i class="fa-solid fa-arrow-left"></i>
+        Назад</button>
+    </div>
   <div class="min-h-100% flex p-4 md:p-6 bg-gray-900 rounded-2xl">
     <div
       class="w-full flex flex-col md:flex-row gap-4 bg-gray-800 rounded-2xl overflow-hidden shadow-lg"
@@ -67,6 +72,9 @@ export default defineComponent({
         maximumFractionDigits: 2,
       }).format(price);
     },
+    onBack() {
+      this.$router.go(-1)
+    }
   },
 });
 </script>

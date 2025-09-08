@@ -1,8 +1,9 @@
 <template>
-  <div class="absolute inset-px t-13">
-    <div class="w-full h-full" id="map"></div>
+  <div class="relative w-full grow">
+  <div class="absolute inset-px" id="map">
   </div>
-</template>
+  </div>
+</template> 
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
@@ -40,3 +41,20 @@ export default defineComponent({
   },
 });
 </script>
+
+
+<style>
+#map {
+  position: absolute;
+}
+
+.maplibregl-canvas {
+  position: absolute;
+  border-radius: 20px;
+}
+
+.maplibregl-canvas-container {
+  position: absolute;
+  inset: 0;
+}
+</style>

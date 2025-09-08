@@ -14,11 +14,11 @@
     </div>
     </header>
 
-    <main class="flex-1 container p-4 mt-16" style="min-height: calc(100vh - 106px);" >
+    <main class="p-4 mt-16 w-full flex flex-col">
       <RouterView />
     </main>
 
-    <footer class="bg-gray-100 text-gray-700 p-4 text-center">
+    <footer class="bg-gray-100 text-gray-700 p-4 text-center z-12">
       © 2025 SoftProSpaces
     </footer>
   </div>
@@ -49,4 +49,7 @@ export default defineComponent({
 </script>
 
 <style >
+main {
+  min-height: calc(100vh - 63px);
+}
 </style>
